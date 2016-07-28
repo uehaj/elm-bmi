@@ -1,0 +1,21 @@
+{
+  "name": "elm-bmi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "elm reactor -p 8089",
+    "build": "elm make",
+    "watch": "webpack --watch",
+    "elm": "elm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uehaj/elm-bmi.git"
+  },
+  "author": "UEHARA Junji",
+  "license": "MIT",
+  "devDependencies": {
+    "elm": "^0.17.1"
+  }
+}
