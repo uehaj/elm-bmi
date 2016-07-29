@@ -14,11 +14,12 @@ import Material.Scheme
 import Material.Scheme as Scheme
 import Material.Textfield as Textfield
 import Platform.Cmd exposing (Cmd)
-import Components.NumberField exposing (..)
 import Material
 import Material.Scheme
 import Material.Grid as Grid
 import Material.Grid exposing (grid, cell, size, Device(..))
+import Components.NumberField exposing (..)
+import Components.Ribbon exposing (..)
 
 
 -- MODEL
@@ -99,12 +100,6 @@ update msg model =
             Material.update MDL msg' model
 
 
-
--- VIEW
--- type alias Mdl =
---     Material.Model
-
-
 header =
     [ Layout.row []
         [ Layout.title [] [ text "BMIを計算(Elm)" ]
@@ -131,8 +126,8 @@ body model =
                 ]
                 [ App.map WeightChanged <| inputNumber 1 model.weightComponent "体重を入力してください"
                 ]
-            , cell [Grid.size All 12]
-                [ h3 [ Html.Attributes.style [ ( "padding-left", "1em" ) ]] [text "身長と体重を入力してください"] ]
+            , cell [ Grid.size All 12 ]
+                [ h3 [ Html.Attributes.style [ ( "padding-left", "1em" ) ] ] [ text "身長と体重を入力してください" ] ]
             ]
         ]
     ]
@@ -140,17 +135,20 @@ body model =
 
 view : Model -> Html Msg
 view model =
-    Layout.render MDL
-        model.mdl
-        [ Layout.fixedHeader
-        , Layout.fixedTabs
-        , Layout.waterfall False
+    div []
+        [ Components.Ribbon.view
+        , Layout.render MDL
+            model.mdl
+            [ Layout.fixedHeader
+            , Layout.fixedTabs
+            , Layout.waterfall False
+            ]
+            { header = header
+            , drawer = []
+            , tabs = ( [], [] )
+            , main = body model
+            }
         ]
-        { header = header
-        , drawer = []
-        , tabs = ( [], [] )
-        , main = body model
-        }
         |> Scheme.topWithScheme Red Green
 
 
