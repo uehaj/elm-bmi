@@ -1,4 +1,4 @@
-module Components.NumberField exposing (..)
+module Components.NumberField exposing (update, view, init, Model, Msg(..), render)
 
 import Html.App as Html
 import Html exposing (..)
@@ -8,6 +8,7 @@ import Material
 import Material.Scheme
 import Material.Button as Button
 import Material.Textfield as Textfield
+import Material.Options as Options
 import Material.Options exposing (css)
 import String
 import Html.Events exposing (..)
@@ -26,9 +27,8 @@ main =
 
 
 type alias Model =
-    { value : Float
-    , origValue : String
-    , hasError : Bool
+    { value : Maybe Float
+    , stringValue : String
     , errorMessage : String
     , mdl :
         Material.Model
@@ -38,9 +38,8 @@ type alias Model =
 
 init : ( Model, Cmd msg )
 init =
-    ( { value = 0
-      , origValue = ""
-      , hasError = False
+    ( { value = Nothing
+      , stringValue = ""
       , errorMessage = ""
       , mdl =
             Material.model
@@ -63,11 +62,11 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        InputNumber origValue n ->
-            ( { model | value = n, origValue = origValue, hasError = False, errorMessage = "" }, Cmd.none )
+        InputNumber str n ->
+            ( { model | value = Just n, stringValue = str, errorMessage = "" }, Cmd.none )
 
-        Error origValue err ->
-            ( { model | origValue = origValue, hasError = True, errorMessage = err }, Cmd.none )
+        Error str err ->
+            ( { model | value = Nothing, stringValue = str, errorMessage = err }, Cmd.none )
 
         {- Boilerplate: MDL action handler. It should always look like this. -}
         MDL subMsg ->
@@ -78,8 +77,8 @@ update msg model =
 -- VIEW
 
 
-inputNumber : Int -> Model -> String -> Html Msg
-inputNumber n model lab =
+render : Int -> Model -> String -> Html Msg
+render n model lab =
     let
         onInputHandler =
             \str ->
@@ -94,36 +93,26 @@ inputNumber n model lab =
                         Error str err
     in
         div [ style [ ( "padding", "2em" ) ] ]
-            ([ Textfield.render MDL
-                 [ n ]
-                 model.mdl
-                 [ Textfield.label lab
-                 , Textfield.floatingLabel
-                 , Textfield.value model.origValue
-                 , Textfield.onInput onInputHandler
-                 ]
-             ]
-                ++ if model.hasError then
-                    [ div
-                        [ class "alert alert-danger"
-                        , attribute "role" "alert"
-                        ]
-                        [ span
-                            [ class "glyphicon glyphicon-exclamation-sign"
-                            , class "aria-hidden"
-                            ]
-                            []
-                        , span [] [ text model.errorMessage ]
-                        ]
-                    ]
-                   else
-                    []
-            )
+            [ Textfield.render MDL
+                [ n ]
+                model.mdl
+                [ Textfield.label lab
+                , Textfield.floatingLabel
+                , Textfield.value model.stringValue
+                , Textfield.onInput onInputHandler
+                , case model.value of
+                    Nothing ->
+                        Textfield.error <| model.errorMessage
+
+                    Just _ ->
+                        Options.nop
+                ]
+            ]
 
 
 view : Model -> Html Msg
 view model =
-    inputNumber 0 model "sample"
+    render 0 model "sample"
         |> Material.Scheme.top
 
 
