@@ -12653,11 +12653,11 @@ var _user$project$Main$header = _elm_lang$core$Native_List.fromArray(
 						_debois$elm_mdl$Material_Layout$link,
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_debois$elm_mdl$Material_Layout$href('https://www.github.io/uehaj/elm-bmi/')
+								_debois$elm_mdl$Material_Layout$href('https://elm-lang.org/')
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html$text('Source')
+								_elm_lang$html$Html$text('Elm')
 							]))
 					]))
 			]))
@@ -12673,10 +12673,8 @@ var _user$project$Main$bmi = F2(
 var _user$project$Main$model0 = function () {
 	var _p0 = _user$project$Components_NumberField$init;
 	var m2 = _p0._0;
-	var cmd2 = _p0._1;
 	var _p1 = _user$project$Components_NumberField$init;
 	var m1 = _p1._0;
-	var cmd1 = _p1._1;
 	return {heightComponent: m1, weightComponent: m2, bmiValue: _elm_lang$core$Maybe$Nothing, mdl: _debois$elm_mdl$Material$model};
 }();
 var _user$project$Main$Model = F4(
@@ -12833,6 +12831,14 @@ var _user$project$Main$view = function (model) {
 			_elm_lang$core$Native_List.fromArray(
 				[
 					_user$project$Components_Ribbon$view,
+					A2(
+					_elm_lang$html$Html$header,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$title('BMIの計算(Elm)')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
 					A4(
 					_debois$elm_mdl$Material_Layout$render,
 					_user$project$Main$MDL,
@@ -12846,7 +12852,9 @@ var _user$project$Main$view = function (model) {
 					{
 						header: _user$project$Main$header,
 						drawer: _elm_lang$core$Native_List.fromArray(
-							[]),
+							[
+								_elm_lang$html$Html$text('hge')
+							]),
 						tabs: {
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_List.fromArray(
