@@ -33,8 +33,8 @@ type alias Model =
     }
 
 
-model : Model
-model =
+model0 : Model
+model0 =
     let
         ( m1, cmd1 ) =
             Components.NumberField.init
@@ -98,6 +98,11 @@ update msg model =
             Material.update MDL msg' model
 
 
+-- VIEW
+
+type alias Mdl =
+     Material.Model
+
 header =
     [ Layout.row []
         [ Layout.title [] [ text "BMIを計算(Elm)" ]
@@ -130,7 +135,6 @@ body model =
         ]
     ]
 
-
 view : Model -> Html Msg
 view model =
     div []
@@ -139,7 +143,7 @@ view model =
             model.mdl
             [ Layout.fixedHeader
             , Layout.fixedTabs
-            , Layout.waterfall False
+            , Layout.waterfall True
             ]
             { header = header
             , drawer = []
@@ -153,8 +157,8 @@ view model =
 main : Program Never
 main =
     App.program
-        { init = ( model, Cmd.none )
+        { init = ( model0, Layout.sub0 MDL )
         , view = view
-        , subscriptions = always Sub.none
+        , subscriptions = .mdl >> Layout.subs MDL
         , update = update
         }
