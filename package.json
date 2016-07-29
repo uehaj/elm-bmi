@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "elm reactor -p 8089",
-    "build": "elm make",
+    "build": "elm make src/Main.elm --output dist/index.html",
     "watch": "webpack --watch",
-    "elm": "elm"
+    "elm": "elm",
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -15,7 +16,8 @@
   },
   "author": "UEHARA Junji",
   "license": "MIT",
-  "devDependencies": {
-    "elm": "^0.17.1"
+  "dependencies": {
+    "elm": "^0.17.1",
+    "gh-pages": "^0.11.0"
   }
 }
