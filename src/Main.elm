@@ -1,23 +1,21 @@
 module Main exposing (..)
 
+import Maybe exposing (Maybe(Just, Nothing))
+import Platform.Cmd exposing (Cmd)
 import Html exposing (..)
-import Html.Attributes
 import Html.App as App
+import Html.Attributes
 import Material
-import Material.Options as Options exposing (cs, css, Style)
 import Material.Color as Color
 import Material.Color exposing (Hue(..))
-import Material.Layout as Layout
+import Material.Grid as Grid
+import Material.Grid exposing (grid, cell, size, Device(..))
 import Material.Layout as Layout
 import Material.Layout exposing (..)
+import Material.Options as Options exposing (cs, css, Style)
 import Material.Scheme
 import Material.Scheme as Scheme
 import Material.Textfield as Textfield
-import Platform.Cmd exposing (Cmd)
-import Material
-import Material.Scheme
-import Material.Grid as Grid
-import Material.Grid exposing (grid, cell, size, Device(..))
 import Components.NumberField exposing (..)
 import Components.Ribbon exposing (..)
 
