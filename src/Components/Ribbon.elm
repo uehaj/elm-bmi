@@ -3,8 +3,8 @@ module Components.Ribbon exposing (view)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
-view =
-    a [ href "https://github.com/uehaj/elm-bmi" ]
+view url =
+    a [ href url ]
         [ img
             [ alt "Fork me on GitHub"
             , attribute "data-canonical-src" "https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"

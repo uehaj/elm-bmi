@@ -54,19 +54,38 @@ init =
 
 
 type Msg
-    = InputNumber String Float
-    | Error String String
+    = ValueChanged String
+    | Validate (Result String Float)
     | MDL Material.Msg
+
+
+convertAndValidate : String -> Result String Float
+convertAndValidate str =
+    (String.toFloat str)
+        `Result.andThen` \num ->
+                            if (num >= 0) then
+                                Ok num
+                            else
+                                Err "Number should be > 0"
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        InputNumber str n ->
-            ( { model | value = Just n, stringValue = str, errorMessage = "" }, Cmd.none )
+        ValueChanged str ->
+            update (Validate <| convertAndValidate str) { model | stringValue = str }
 
-        Error str err ->
-            ( { model | value = Nothing, stringValue = str, errorMessage = err }, Cmd.none )
+        Validate result ->
+            let
+                newModel =
+                    case result of
+                        Ok num ->
+                            { model | value = Just num }
+
+                        Err err ->
+                            { model | value = Nothing, errorMessage = err }
+            in
+                ( newModel, Cmd.none )
 
         {- Boilerplate: MDL action handler. It should always look like this. -}
         MDL subMsg ->
@@ -79,40 +98,30 @@ update msg model =
 
 render : Int -> Model -> String -> Html Msg
 render n model lab =
-    let
-        onInputHandler =
-            \str ->
-                case String.toFloat str of
-                    Ok n ->
-                        if n > 0 then
-                            InputNumber str n
-                        else
-                            Error str "Number should be > 0"
-
-                    Err err ->
-                        Error str err
-    in
-        div [ style [ ( "padding", "2em" ) ] ]
-            [ Textfield.render MDL
-                [ n ]
-                model.mdl
-                [ Textfield.label lab
-                , Textfield.floatingLabel
-                , Textfield.value model.stringValue
-                , Textfield.onInput onInputHandler
-                , case model.value of
-                    Nothing ->
+    div [ style [ ( "padding", "2em" ) ] ]
+        [ Textfield.render MDL
+            [ n ]
+            model.mdl
+            [ Textfield.label lab
+            , Textfield.floatingLabel
+            , Textfield.value model.stringValue
+            , Textfield.onInput <| ValueChanged
+            , case model.value of
+                Nothing ->
+                    if model.stringValue == "" then
+                        Options.nop
+                    else
                         Textfield.error <| model.errorMessage
 
-                    Just _ ->
-                        Options.nop
-                ]
+                Just _ ->
+                    Options.nop
             ]
+        ]
 
 
 view : Model -> Html Msg
 view model =
-    render 0 model "sample"
+    render 0 model "Sample"
         |> Material.Scheme.top
 
 
