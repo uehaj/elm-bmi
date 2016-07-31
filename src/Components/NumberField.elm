@@ -8,8 +8,7 @@ import Material
 import Material.Scheme
 import Material.Button as Button
 import Material.Textfield as Textfield
-import Material.Options as Options
-import Material.Options exposing (css)
+import Material.Options as Options exposing (css)
 import String
 import Html.Events exposing (..)
 
@@ -30,9 +29,7 @@ type alias Model =
     { value : Maybe Float
     , stringValue : String
     , errorMessage : String
-    , mdl :
-        Material.Model
-        -- Boilerplate: mdl is the Model store for any and all MDL components you need.
+    , mdl : Material.Model
     }
 
 
@@ -41,9 +38,7 @@ init =
     ( { value = Nothing
       , stringValue = ""
       , errorMessage = ""
-      , mdl =
-            Material.model
-            -- Boilerplate: Always use this initial MDL model store.
+      , mdl = Material.model
       }
     , Cmd.none
     )
@@ -55,7 +50,6 @@ init =
 
 type Msg
     = ValueChanged String
-    | Validate (Result String Float)
     | MDL Material.Msg
 
 
@@ -73,21 +67,20 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ValueChanged str ->
-            update (Validate <| convertAndValidate str) { model | stringValue = str }
-
-        Validate result ->
             let
-                newModel =
-                    case result of
+                model' =
+                    { model | stringValue = str }
+
+                model'' =
+                    case convertAndValidate str of
                         Ok num ->
-                            { model | value = Just num }
+                            { model' | value = Just num }
 
                         Err err ->
-                            { model | value = Nothing, errorMessage = err }
+                            { model' | value = Nothing, errorMessage = err }
             in
-                ( newModel, Cmd.none )
+                ( model'', Cmd.none )
 
-        {- Boilerplate: MDL action handler. It should always look like this. -}
         MDL subMsg ->
             Material.update MDL subMsg model
 

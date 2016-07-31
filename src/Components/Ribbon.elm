@@ -3,6 +3,7 @@ module Components.Ribbon exposing (view)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
+view : String -> Html a
 view url =
     a [ href url ]
         [ img
