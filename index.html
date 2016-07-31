@@ -12501,8 +12501,23 @@ var _debois$elm_mdl$Material_Scheme$topWithScheme = F3(
 var _debois$elm_mdl$Material_Scheme$top = function (content) {
 	return A3(_debois$elm_mdl$Material_Scheme$topWithScheme, _debois$elm_mdl$Material_Color$Grey, _debois$elm_mdl$Material_Color$Grey, content);
 };
+var _shmookey$cmd_extra$Cmd_Extra$message = function (x) {
+	return A3(
+		_elm_lang$core$Task$perform,
+		_elm_lang$core$Basics$identity,
+		_elm_lang$core$Basics$identity,
+		_elm_lang$core$Task$succeed(x));
+};
 var _user$project$Components_NumberField$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
+};
+var _user$project$Components_NumberField$convertAndValidate = function (str) {
+	return A2(
+		_elm_lang$core$Result$andThen,
+		_elm_lang$core$String$toFloat(str),
+		function (num) {
+			return (_elm_lang$core$Native_Utils.cmp(num, 0) > -1) ? _elm_lang$core$Result$Ok(num) : _elm_lang$core$Result$Err('Number should be > 0');
+		});
 };
 var _user$project$Components_NumberField$init = {
 	ctor: '_Tuple2',
@@ -12519,50 +12534,35 @@ var _user$project$Components_NumberField$MDL = function (a) {
 var _user$project$Components_NumberField$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
-		switch (_p0.ctor) {
-			case 'InputNumber':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
+		if (_p0.ctor === 'ValueChanged') {
+			var _p2 = _p0._0;
+			var model$ = _elm_lang$core$Native_Utils.update(
+				model,
+				{stringValue: _p2});
+			var model$$ = function () {
+				var _p1 = _user$project$Components_NumberField$convertAndValidate(_p2);
+				if (_p1.ctor === 'Ok') {
+					return _elm_lang$core$Native_Utils.update(
+						model$,
 						{
-							value: _elm_lang$core$Maybe$Just(_p0._1),
-							stringValue: _p0._0,
-							errorMessage: ''
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Error':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{value: _elm_lang$core$Maybe$Nothing, stringValue: _p0._0, errorMessage: _p0._1}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			default:
-				return A3(_debois$elm_mdl$Material$update, _user$project$Components_NumberField$MDL, _p0._0, model);
+							value: _elm_lang$core$Maybe$Just(_p1._0)
+						});
+				} else {
+					return _elm_lang$core$Native_Utils.update(
+						model$,
+						{value: _elm_lang$core$Maybe$Nothing, errorMessage: _p1._0});
+				}
+			}();
+			return {ctor: '_Tuple2', _0: model$$, _1: _elm_lang$core$Platform_Cmd$none};
+		} else {
+			return A3(_debois$elm_mdl$Material$update, _user$project$Components_NumberField$MDL, _p0._0, model);
 		}
 	});
-var _user$project$Components_NumberField$Error = F2(
-	function (a, b) {
-		return {ctor: 'Error', _0: a, _1: b};
-	});
-var _user$project$Components_NumberField$InputNumber = F2(
-	function (a, b) {
-		return {ctor: 'InputNumber', _0: a, _1: b};
-	});
+var _user$project$Components_NumberField$ValueChanged = function (a) {
+	return {ctor: 'ValueChanged', _0: a};
+};
 var _user$project$Components_NumberField$render = F3(
 	function (n, model, lab) {
-		var onInputHandler = function (str) {
-			var _p1 = _elm_lang$core$String$toFloat(str);
-			if (_p1.ctor === 'Ok') {
-				var _p2 = _p1._0;
-				return (_elm_lang$core$Native_Utils.cmp(_p2, 0) > 0) ? A2(_user$project$Components_NumberField$InputNumber, str, _p2) : A2(_user$project$Components_NumberField$Error, str, 'Number should be > 0');
-			} else {
-				return A2(_user$project$Components_NumberField$Error, str, _p1._0);
-			}
-		};
 		return A2(
 			_elm_lang$html$Html$div,
 			_elm_lang$core$Native_List.fromArray(
@@ -12586,11 +12586,11 @@ var _user$project$Components_NumberField$render = F3(
 							_debois$elm_mdl$Material_Textfield$label(lab),
 							_debois$elm_mdl$Material_Textfield$floatingLabel,
 							_debois$elm_mdl$Material_Textfield$value(model.stringValue),
-							_debois$elm_mdl$Material_Textfield$onInput(onInputHandler),
+							_debois$elm_mdl$Material_Textfield$onInput(_user$project$Components_NumberField$ValueChanged),
 							function () {
 							var _p3 = model.value;
 							if (_p3.ctor === 'Nothing') {
-								return _debois$elm_mdl$Material_Textfield$error(model.errorMessage);
+								return _elm_lang$core$Native_Utils.eq(model.stringValue, '') ? _debois$elm_mdl$Material_Options$nop : _debois$elm_mdl$Material_Textfield$error(model.errorMessage);
 							} else {
 								return _debois$elm_mdl$Material_Options$nop;
 							}
@@ -12600,225 +12600,301 @@ var _user$project$Components_NumberField$render = F3(
 	});
 var _user$project$Components_NumberField$view = function (model) {
 	return _debois$elm_mdl$Material_Scheme$top(
-		A3(_user$project$Components_NumberField$render, 0, model, 'sample'));
+		A3(_user$project$Components_NumberField$render, 0, model, 'Sample'));
 };
 var _user$project$Components_NumberField$main = {
 	main: _elm_lang$html$Html_App$program(
 		{init: _user$project$Components_NumberField$init, update: _user$project$Components_NumberField$update, subscriptions: _user$project$Components_NumberField$subscriptions, view: _user$project$Components_NumberField$view})
 };
-var _user$project$Components_Ribbon$view = A2(
-	_elm_lang$html$Html$a,
-	_elm_lang$core$Native_List.fromArray(
-		[
-			_elm_lang$html$Html_Attributes$href('https://github.com/uehaj/elm-bmi')
-		]),
-	_elm_lang$core$Native_List.fromArray(
-		[
-			A2(
-			_elm_lang$html$Html$img,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$alt('Fork me on GitHub'),
-					A2(_elm_lang$html$Html_Attributes$attribute, 'data-canonical-src', 'https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png'),
-					_elm_lang$html$Html_Attributes$src('https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67'),
-					A2(_elm_lang$html$Html_Attributes$attribute, 'style', 'position: absolute; top: 0; right: 0; border: 0; z-index: 1000;')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[]))
-		]));
-var _user$project$Main$header = _elm_lang$core$Native_List.fromArray(
-	[
-		A2(
-		_debois$elm_mdl$Material_Layout$row,
+var _user$project$Components_BmiCalc$round_1 = function (x) {
+	return _elm_lang$core$Basics$toFloat(
+		_elm_lang$core$Basics$round(x * 10)) / 10;
+};
+var _user$project$Components_BmiCalc$calcBMI = F2(
+	function (h, w) {
+		return w / Math.pow(h / 100, 2);
+	});
+var _user$project$Components_BmiCalc$init = {
+	heightComponentModel: _elm_lang$core$Basics$fst(_user$project$Components_NumberField$init),
+	weightComponentModel: _elm_lang$core$Basics$fst(_user$project$Components_NumberField$init),
+	bmiValue: _elm_lang$core$Maybe$Nothing,
+	mdl: _debois$elm_mdl$Material$model
+};
+var _user$project$Components_BmiCalc$Model = F4(
+	function (a, b, c, d) {
+		return {heightComponentModel: a, weightComponentModel: b, bmiValue: c, mdl: d};
+	});
+var _user$project$Components_BmiCalc$MDL = function (a) {
+	return {ctor: 'MDL', _0: a};
+};
+var _user$project$Components_BmiCalc$InputDataChanged = function (a) {
+	return {ctor: 'InputDataChanged', _0: a};
+};
+var _user$project$Components_BmiCalc$ReCalc = {ctor: 'ReCalc'};
+var _user$project$Components_BmiCalc$update = F2(
+	function (msg, model) {
+		update:
+		while (true) {
+			var _p0 = msg;
+			switch (_p0.ctor) {
+				case 'HeightChanged':
+					var _v1 = _user$project$Components_BmiCalc$ReCalc,
+						_v2 = _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							heightComponentModel: _elm_lang$core$Basics$fst(
+								A2(_user$project$Components_NumberField$update, _p0._0, model.heightComponentModel))
+						});
+					msg = _v1;
+					model = _v2;
+					continue update;
+				case 'WeightChanged':
+					var _v3 = _user$project$Components_BmiCalc$ReCalc,
+						_v4 = _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							weightComponentModel: _elm_lang$core$Basics$fst(
+								A2(_user$project$Components_NumberField$update, _p0._0, model.weightComponentModel))
+						});
+					msg = _v3;
+					model = _v4;
+					continue update;
+				case 'ReCalc':
+					var bmiValue = A2(
+						_elm_lang$core$Maybe$map,
+						_user$project$Components_BmiCalc$round_1,
+						A3(_elm_lang$core$Maybe$map2, _user$project$Components_BmiCalc$calcBMI, model.heightComponentModel.value, model.weightComponentModel.value));
+					var newModel = _elm_lang$core$Native_Utils.update(
+						model,
+						{bmiValue: bmiValue});
+					var cmd = _shmookey$cmd_extra$Cmd_Extra$message(
+						_user$project$Components_BmiCalc$InputDataChanged(bmiValue));
+					return {ctor: '_Tuple2', _0: newModel, _1: cmd};
+				case 'InputDataChanged':
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				default:
+					return A3(_debois$elm_mdl$Material$update, _user$project$Components_BmiCalc$MDL, _p0._0, model);
+			}
+		}
+	});
+var _user$project$Components_BmiCalc$WeightChanged = function (a) {
+	return {ctor: 'WeightChanged', _0: a};
+};
+var _user$project$Components_BmiCalc$HeightChanged = function (a) {
+	return {ctor: 'HeightChanged', _0: a};
+};
+var _user$project$Components_BmiCalc$view = function (model) {
+	return A2(
+		_debois$elm_mdl$Material_Options$div,
 		_elm_lang$core$Native_List.fromArray(
 			[]),
 		_elm_lang$core$Native_List.fromArray(
 			[
 				A2(
-				_debois$elm_mdl$Material_Layout$title,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('BMIを計算(Elm)')
-					])),
-				_debois$elm_mdl$Material_Layout$spacer,
-				A2(
-				_debois$elm_mdl$Material_Layout$navigation,
+				_debois$elm_mdl$Material_Grid$grid,
 				_elm_lang$core$Native_List.fromArray(
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
 						A2(
-						_debois$elm_mdl$Material_Layout$link,
+						_debois$elm_mdl$Material_Grid$cell,
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_debois$elm_mdl$Material_Layout$href('https://elm-lang.org/')
+								A2(_debois$elm_mdl$Material_Grid$size, _debois$elm_mdl$Material_Grid$All, 6),
+								A2(_debois$elm_mdl$Material_Grid$size, _debois$elm_mdl$Material_Grid$Phone, 12)
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html$text('Elm')
+								A2(
+								_elm_lang$html$Html_App$map,
+								_user$project$Components_BmiCalc$HeightChanged,
+								A3(_user$project$Components_NumberField$render, 0, model.heightComponentModel, '身長を入力してください'))
+							])),
+						A2(
+						_debois$elm_mdl$Material_Grid$cell,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(_debois$elm_mdl$Material_Grid$size, _debois$elm_mdl$Material_Grid$All, 6),
+								A2(_debois$elm_mdl$Material_Grid$size, _debois$elm_mdl$Material_Grid$Phone, 12)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html_App$map,
+								_user$project$Components_BmiCalc$WeightChanged,
+								A3(_user$project$Components_NumberField$render, 1, model.weightComponentModel, '体重を入力してください'))
+							])),
+						A2(
+						_debois$elm_mdl$Material_Grid$cell,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(_debois$elm_mdl$Material_Grid$size, _debois$elm_mdl$Material_Grid$All, 12)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$h4,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$style(
+										_elm_lang$core$Native_List.fromArray(
+											[
+												{ctor: '_Tuple2', _0: 'padding-left', _1: '1em'}
+											]))
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										function () {
+										var _p1 = model.bmiValue;
+										if (_p1.ctor === 'Just') {
+											return _elm_lang$html$Html$text(
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													'あなたのBMIは',
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														_elm_lang$core$Basics$toString(_p1._0),
+														'です')));
+										} else {
+											return _elm_lang$html$Html$text('身長と体重を入力してください');
+										}
+									}()
+									]))
 							]))
 					]))
-			]))
-	]);
-var _user$project$Main$round_1 = function (x) {
-	return _elm_lang$core$Basics$toFloat(
-		_elm_lang$core$Basics$round(x * 10)) / 10;
+			]));
 };
-var _user$project$Main$bmi = F2(
-	function (h, w) {
-		return w / Math.pow(h / 100, 2);
-	});
-var _user$project$Main$model0 = function () {
-	var _p0 = _user$project$Components_NumberField$init;
-	var m2 = _p0._0;
-	var _p1 = _user$project$Components_NumberField$init;
-	var m1 = _p1._0;
-	return {heightComponent: m1, weightComponent: m2, bmiValue: _elm_lang$core$Maybe$Nothing, mdl: _debois$elm_mdl$Material$model};
-}();
-var _user$project$Main$Model = F4(
-	function (a, b, c, d) {
-		return {heightComponent: a, weightComponent: b, bmiValue: c, mdl: d};
-	});
-var _user$project$Main$MDL = function (a) {
-	return {ctor: 'MDL', _0: a};
+var _user$project$Components_BmiCalc$main = {
+	main: _elm_lang$html$Html_App$program(
+		{
+			init: {
+				ctor: '_Tuple2',
+				_0: _user$project$Components_BmiCalc$init,
+				_1: _debois$elm_mdl$Material_Layout$sub0(_user$project$Components_BmiCalc$MDL)
+			},
+			view: function (_p2) {
+				return A3(
+					_debois$elm_mdl$Material_Scheme$topWithScheme,
+					_debois$elm_mdl$Material_Color$Blue,
+					_debois$elm_mdl$Material_Color$Green,
+					_user$project$Components_BmiCalc$view(_p2));
+			},
+			subscriptions: function (_p3) {
+				return A2(
+					_debois$elm_mdl$Material_Layout$subs,
+					_user$project$Components_BmiCalc$MDL,
+					function (_) {
+						return _.mdl;
+					}(_p3));
+			},
+			update: _user$project$Components_BmiCalc$update
+		})
 };
-var _user$project$Main$ReCalc = {ctor: 'ReCalc'};
-var _user$project$Main$update = F2(
-	function (msg, model) {
-		update:
-		while (true) {
-			var _p2 = msg;
-			switch (_p2.ctor) {
-				case 'HeightChanged':
-					var _p3 = A2(_user$project$Components_NumberField$update, _p2._0, model.heightComponent);
-					var m1 = _p3._0;
-					var _v1 = _user$project$Main$ReCalc,
-						_v2 = _elm_lang$core$Native_Utils.update(
-						model,
-						{heightComponent: m1});
-					msg = _v1;
-					model = _v2;
-					continue update;
-				case 'WeightChanged':
-					var _p4 = A2(_user$project$Components_NumberField$update, _p2._0, model.weightComponent);
-					var m2 = _p4._0;
-					var _v3 = _user$project$Main$ReCalc,
-						_v4 = _elm_lang$core$Native_Utils.update(
-						model,
-						{weightComponent: m2});
-					msg = _v3;
-					model = _v4;
-					continue update;
-				case 'ReCalc':
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								bmiValue: A2(
-									_elm_lang$core$Maybe$map,
-									_user$project$Main$round_1,
-									A3(_elm_lang$core$Maybe$map2, _user$project$Main$bmi, model.heightComponent.value, model.weightComponent.value))
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				default:
-					return A3(_debois$elm_mdl$Material$update, _user$project$Main$MDL, _p2._0, model);
-			}
-		}
-	});
-var _user$project$Main$WeightChanged = function (a) {
-	return {ctor: 'WeightChanged', _0: a};
+var _user$project$Components_Ribbon$view = function (url) {
+	return A2(
+		_elm_lang$html$Html$a,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$href(url)
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$img,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$alt('Fork me on GitHub'),
+						A2(_elm_lang$html$Html_Attributes$attribute, 'data-canonical-src', 'https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png'),
+						_elm_lang$html$Html_Attributes$src('https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67'),
+						A2(_elm_lang$html$Html_Attributes$attribute, 'style', 'position: absolute; top: 0; right: 0; border: 0; z-index: 1000;')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[]))
+			]));
 };
-var _user$project$Main$HeightChanged = function (a) {
-	return {ctor: 'HeightChanged', _0: a};
-};
-var _user$project$Main$body = function (model) {
-	return _elm_lang$core$Native_List.fromArray(
+var _user$project$Main$header = A2(
+	_debois$elm_mdl$Material_Layout$row,
+	_elm_lang$core$Native_List.fromArray(
+		[]),
+	_elm_lang$core$Native_List.fromArray(
 		[
 			A2(
-			_debois$elm_mdl$Material_Options$div,
+			_debois$elm_mdl$Material_Layout$title,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('BMIを計算(Elm)')
+				])),
+			_debois$elm_mdl$Material_Layout$spacer,
+			A2(
+			_debois$elm_mdl$Material_Layout$navigation,
 			_elm_lang$core$Native_List.fromArray(
 				[]),
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A2(
-					_debois$elm_mdl$Material_Grid$grid,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
+					_debois$elm_mdl$Material_Layout$link,
 					_elm_lang$core$Native_List.fromArray(
 						[
-							A2(
-							_debois$elm_mdl$Material_Grid$cell,
-							_elm_lang$core$Native_List.fromArray(
-								[
-									A2(_debois$elm_mdl$Material_Grid$size, _debois$elm_mdl$Material_Grid$All, 6),
-									A2(_debois$elm_mdl$Material_Grid$size, _debois$elm_mdl$Material_Grid$Phone, 12)
-								]),
-							_elm_lang$core$Native_List.fromArray(
-								[
-									A2(
-									_elm_lang$html$Html_App$map,
-									_user$project$Main$HeightChanged,
-									A3(_user$project$Components_NumberField$render, 0, model.heightComponent, '身長を入力してください'))
-								])),
-							A2(
-							_debois$elm_mdl$Material_Grid$cell,
-							_elm_lang$core$Native_List.fromArray(
-								[
-									A2(_debois$elm_mdl$Material_Grid$size, _debois$elm_mdl$Material_Grid$All, 6),
-									A2(_debois$elm_mdl$Material_Grid$size, _debois$elm_mdl$Material_Grid$Phone, 12)
-								]),
-							_elm_lang$core$Native_List.fromArray(
-								[
-									A2(
-									_elm_lang$html$Html_App$map,
-									_user$project$Main$WeightChanged,
-									A3(_user$project$Components_NumberField$render, 1, model.weightComponent, '体重を入力してください'))
-								])),
-							A2(
-							_debois$elm_mdl$Material_Grid$cell,
-							_elm_lang$core$Native_List.fromArray(
-								[
-									A2(_debois$elm_mdl$Material_Grid$size, _debois$elm_mdl$Material_Grid$All, 12)
-								]),
-							_elm_lang$core$Native_List.fromArray(
-								[
-									A2(
-									_elm_lang$html$Html$h3,
-									_elm_lang$core$Native_List.fromArray(
-										[
-											_elm_lang$html$Html_Attributes$style(
-											_elm_lang$core$Native_List.fromArray(
-												[
-													{ctor: '_Tuple2', _0: 'padding-left', _1: '1em'}
-												]))
-										]),
-									_elm_lang$core$Native_List.fromArray(
-										[
-											function () {
-											var _p5 = model.bmiValue;
-											if (_p5.ctor === 'Just') {
-												return _elm_lang$html$Html$text(
-													A2(
-														_elm_lang$core$Basics_ops['++'],
-														'あなたのBMIは',
-														A2(
-															_elm_lang$core$Basics_ops['++'],
-															_elm_lang$core$Basics$toString(_p5._0),
-															'です')));
-											} else {
-												return _elm_lang$html$Html$text('身長と体重を入力してください');
-											}
-										}()
-										]))
-								]))
+							_debois$elm_mdl$Material_Layout$href('https://elm-lang.org/')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('elm-lang.org')
 						]))
 				]))
-		]);
+		]));
+var _user$project$Main$ovesityLevel = function (bmiValue) {
+	var _p0 = bmiValue;
+	if (_p0.ctor === 'Just') {
+		var _p1 = _p0._0;
+		return ((_elm_lang$core$Native_Utils.cmp(25, _p1) < 1) && (_elm_lang$core$Native_Utils.cmp(_p1, 30) < 0)) ? '肥満' : (((_elm_lang$core$Native_Utils.cmp(30, _p1) < 1) && (_elm_lang$core$Native_Utils.cmp(_p1, 35) < 0)) ? '肥満2度' : (((_elm_lang$core$Native_Utils.cmp(35, _p1) < 1) && (_elm_lang$core$Native_Utils.cmp(_p1, 40) < 0)) ? '肥満3度' : ((_elm_lang$core$Native_Utils.cmp(40, _p1) < 1) ? '肥満4度' : (((_elm_lang$core$Native_Utils.cmp(18.5, _p1) < 1) && (_elm_lang$core$Native_Utils.cmp(_p1, 25) < 0)) ? '普通体重' : '低体重'))));
+	} else {
+		return '';
+	}
 };
+var _user$project$Main$init = {bmiCalcComponentModel: _user$project$Components_BmiCalc$init, level: '', mdl: _debois$elm_mdl$Material$model};
+var _user$project$Main$Model = F3(
+	function (a, b, c) {
+		return {bmiCalcComponentModel: a, level: b, mdl: c};
+	});
+var _user$project$Main$MDL = function (a) {
+	return {ctor: 'MDL', _0: a};
+};
+var _user$project$Main$BMI = function (a) {
+	return {ctor: 'BMI', _0: a};
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p2 = msg;
+		if (_p2.ctor === 'BMI') {
+			if (_p2._0.ctor === 'InputDataChanged') {
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							level: _user$project$Main$ovesityLevel(_p2._0._0)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			} else {
+				var _p3 = A2(_user$project$Components_BmiCalc$update, _p2._0, model.bmiCalcComponentModel);
+				var newModel = _p3._0;
+				var newCmd = _p3._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{bmiCalcComponentModel: newModel}),
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$BMI, newCmd)
+				};
+			}
+		} else {
+			return A3(_debois$elm_mdl$Material$update, _user$project$Main$MDL, _p2._0, model);
+		}
+	});
 var _user$project$Main$view = function (model) {
 	return A3(
 		_debois$elm_mdl$Material_Scheme$topWithScheme,
@@ -12830,7 +12906,7 @@ var _user$project$Main$view = function (model) {
 				[]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_user$project$Components_Ribbon$view,
+					_user$project$Components_Ribbon$view('https://github.com/uehaj/elm-bmi'),
 					A2(
 					_elm_lang$html$Html$header,
 					_elm_lang$core$Native_List.fromArray(
@@ -12850,10 +12926,11 @@ var _user$project$Main$view = function (model) {
 							_debois$elm_mdl$Material_Layout$waterfall(true)
 						]),
 					{
-						header: _user$project$Main$header,
+						header: _elm_lang$core$Native_List.fromArray(
+							[_user$project$Main$header]),
 						drawer: _elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html$text('hge')
+								_elm_lang$html$Html$text('')
 							]),
 						tabs: {
 							ctor: '_Tuple2',
@@ -12862,7 +12939,23 @@ var _user$project$Main$view = function (model) {
 							_1: _elm_lang$core$Native_List.fromArray(
 								[])
 						},
-						main: _user$project$Main$body(model)
+						main: _elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html_App$map,
+								_user$project$Main$BMI,
+								_user$project$Components_BmiCalc$view(model.bmiCalcComponentModel)),
+								A2(
+								_debois$elm_mdl$Material_Options$div,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(_debois$elm_mdl$Material_Options$css, 'padding-left', '1em')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text(model.level)
+									]))
+							])
 					})
 				])));
 };
@@ -12871,17 +12964,17 @@ var _user$project$Main$main = {
 		{
 			init: {
 				ctor: '_Tuple2',
-				_0: _user$project$Main$model0,
+				_0: _user$project$Main$init,
 				_1: _debois$elm_mdl$Material_Layout$sub0(_user$project$Main$MDL)
 			},
 			view: _user$project$Main$view,
-			subscriptions: function (_p6) {
+			subscriptions: function (_p4) {
 				return A2(
 					_debois$elm_mdl$Material_Layout$subs,
 					_user$project$Main$MDL,
 					function (_) {
 						return _.mdl;
-					}(_p6));
+					}(_p4));
 			},
 			update: _user$project$Main$update
 		})
