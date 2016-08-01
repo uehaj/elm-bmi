@@ -115,7 +115,7 @@ view model =
             , tabs = ( [], [] )
             , main =
                 [ App.map BMI <| BmiCalc.view model.bmiCalcComponentModel
-                , Options.div [ css "padding-left" "5em" ] [ text model.level ]
+                , Options.div [ css "padding-left" "5em" ] [ text <| "判定: " ++ model.level ]
                 ]
             }
         ]
